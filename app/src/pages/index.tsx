@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import dynamic from "next/dynamic";
+import TamagotchiNFTDisplay from "../components/TamagotchiNFTDisplay";
 
 const WalletConnector = dynamic(() => import("../components/Wallets"), {
   ssr: false,
@@ -51,11 +52,7 @@ export default function IndexPage() {
               {/* Pass setWalletAddress as a prop to WalletConnector */}
               <WalletConnector setWalletAddress={setWalletAddress} />
               {/* Render Tamagotchi NFTs */}
-              <ul>
-                {tamagotchiNFTs.map((nft, index) => (
-                  <li key={index}>{/* Display NFT information */}</li>
-                ))}
-              </ul>
+              <TamagotchiNFTDisplay nfts={tamagotchiNFTs} />
             </div>
           </div>
         </div>
