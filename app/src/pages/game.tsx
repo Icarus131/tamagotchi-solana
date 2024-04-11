@@ -3,10 +3,14 @@ import { useRouter } from "next/router";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 
+// Assuming you have imported your Solana program here
+import { feed, burn } from "./your_program_file_name";
+
 const NftPage = () => {
   const router = useRouter();
   const { publicKey } = useWallet();
   const [lastFeedDate, setLastFeedDate] = useState<number | null>(null);
+  const [art, setArt] = useState<string>("");
 
   useEffect(() => {
     if (!publicKey) {
@@ -31,35 +35,108 @@ const NftPage = () => {
         return;
       }
 
-      // Parse the last_feed_date from the account data
       const dataBuffer = Buffer.from(nftDataAccountInfo.data);
-      const lastFeedDate = dataBuffer.readUInt32LE(0); // Assuming last_feed_date is stored as a 32-bit little-endian integer
+      const lastFeedDate = dataBuffer.readUInt32LE(0);
       setLastFeedDate(lastFeedDate);
+
+      const oneDayInSeconds = 24 * 60 * 60;
+      const daysSinceLastFeed = Math.floor(
+        (Date.now() / 1000 - lastFeedDate) / oneDayInSeconds
+      );
+      switch (daysSinceLastFeed) {
+        case 1:
+          setArt(
+            <div className="art">
+              <div className="lcd">
+                <div className="line">•⩊• happi, no hungry ''</div>
+                <div className="line">⋆｡˚ ☁︎ ˚｡⋆｡˚☽˚｡</div>
+                <div className="line">⋆｡˚ ☁︎ ˚｡⋆｡˚</div>
+                <div className="line">?</div>
+                <div className="line">╱|、</div>
+                <div className="line">(˚ˎ 。7</div>
+                <div className="line">|、</div>
+                <div className="line">じしˍ,)ノ</div>
+                <br></br>
+                <div class="line">────⋆⋅☆⋅⋆── ────⋆⋅☆⋅⋆──</div>
+              </div>
+            </div>
+          );
+          break;
+        case 2:
+          setArt(
+            <div className="art">
+              <div className="lcd">
+                <div className="line">•⩊• little hungry here ''</div>
+                <div className="line">⋆｡˚ ☁︎ ˚｡⋆｡˚☽˚｡</div>
+                <div className="line">⋆｡˚ ☁︎ ˚｡⋆｡˚</div>
+                <div className="line">?</div>
+                <div className="line">╱|、</div>
+                <div className="line">(˚ˎ 。7</div>
+                <div className="line">|、</div>
+                <div className="line">じしˍ,)ノ</div>
+                <br></br>
+                <div class="line">────⋆⋅☆⋅⋆── ────⋆⋅☆⋅⋆──</div>
+              </div>
+            </div>
+          );
+          break;
+        case 3:
+          setArt(
+            <div className="art">
+              <div className="lcd">
+                <div className="line">•⩊• feed me now :( ''</div>
+                <div className="line">⋆｡˚ ☁︎ ˚｡⋆｡˚☽˚｡</div>
+                <div className="line">⋆｡˚ ☁︎ ˚｡⋆｡˚</div>
+                <div className="line">?</div>
+                <div className="line">╱|、</div>
+                <div className="line">(˚ˎ 。7</div>
+                <div className="line">|、</div>
+                <div className="line">じしˍ,)ノ</div>
+                <br></br>
+                <div class="line">────⋆⋅☆⋅⋆── ────⋆⋅☆⋅⋆──</div>
+              </div>
+            </div>
+          );
+          break;
+        default:
+          try {
+            await burn();
+            console.log("Burn successful");
+          } catch (error) {
+            console.error("Error burning:", error);
+          }
+          setArt(
+            <div className="art">
+              <div className="lcd">
+                <div className="line">•⩊• noo, you cant feed me anymore ''</div>
+                <div className="line">⋆｡˚ ☁︎ ˚｡⋆｡˚☽˚｡</div>
+                <div className="line">⋆｡˚ ☁︎ ˚｡⋆｡˚</div>
+                <div className="line">?</div>
+                <div className="line">╱|、</div>
+                <div className="line">(˚ˎ 。7</div>
+                <div className="line">|、</div>
+                <div className="line">じしˍ,)ノ</div>
+                <br></br>
+                <div class="line">────⋆⋅☆⋅⋆── ────⋆⋅☆⋅⋆──</div>
+              </div>
+            </div>
+          );
+      }
     };
 
     checkNftPresenceAndLastFeedDate();
 
-    // Cleanup function
     return () => {};
   }, [publicKey, router]);
 
-  const handleBurnt = () => {
-    //burn
-  };
-
-  const getFeedStatus = () => {
-    if (lastFeedDate === null) return "Unknown";
-
-    const oneDayInSeconds = 24 * 60 * 60;
-    const daysSinceLastFeed = Math.floor(
-      (Date.now() / 1000 - lastFeedDate) / oneDayInSeconds
-    );
-
-    if (daysSinceLastFeed === 1) return "One day";
-    if (daysSinceLastFeed === 2) return "Two days";
-    if (daysSinceLastFeed === 3) return "Three days";
-
-    return "More than three days";
+  const handlePet = async () => {
+    try {
+      await feed();
+      console.log("Pet successful");
+      setLastFeedDate(Date.now() / 1000);
+    } catch (error) {
+      console.error("Error petting:", error);
+    }
   };
 
   return (
@@ -70,19 +147,12 @@ const NftPage = () => {
           <h2>{publicKey?.toBase58()}</h2>
           {lastFeedDate !== null && (
             <div>
-              <p>Last feed: {getFeedStatus()}</p>
-              {lastFeedDate > 3 * 24 * 60 * 60 ? (
+              <p>Last feed: {lastFeedDate}</p>
+              {art && (
                 <div>
-                  <img src="/burnt_image.png" alt="Burnt" />
-                  <button onClick={handleBurnt}>Burn</button>
+                  <pre>{art}</pre>
+                  <button onClick={handlePet}>Pet</button>{" "}
                 </div>
-              ) : (
-                <img
-                  src={`/other_image_${getFeedStatus()
-                    .toLowerCase()
-                    .replace(/\s+/g, "_")}.png`}
-                  alt="Other"
-                />
               )}
             </div>
           )}

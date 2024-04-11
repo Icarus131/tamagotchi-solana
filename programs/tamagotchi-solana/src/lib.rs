@@ -61,6 +61,24 @@ pub mod happi_cat_nft {
 
         Ok(())
     }
+
+    pub fn burn(ctx: Context<Burn>, _amount: u64) -> Result<()> {
+        // Transfer the NFT to the dead address to burn it
+        token::transfer(ctx.accounts.into(), _amount)?;
+        Ok(())
+    }
+
+    pub fn sell(ctx: Context<Sell>, _price: u64) -> Result<()> {
+        // Transfer the NFT back to the minter's address
+        token::transfer(ctx.accounts.into(), _price)?;
+        Ok(())
+    }
+
+    pub fn buy(ctx: Context<Buy>) -> Result<()> {
+        // Wait for the user's transaction and then transfer the NFT to their address
+        token::transfer(ctx.accounts.into(), 5)?; // Assuming a fixed price of 5
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
@@ -90,13 +108,34 @@ pub struct TransferHappiCatNFT<'info> {
     pub from_authority: Signer<'info>,
 }
 
+#[derive(Accounts)]
+pub struct Burn<'info> {
+    pub token_program: Program<'info, Token>,
+    #[account(mut)]
+    pub from: UncheckedAccount<'info>,
+}
+
+#[derive(Accounts)]
+pub struct Sell<'info> {
+    pub token_program: Program<'info, Token>,
+    #[account(mut)]
+    pub from: UncheckedAccount<'info>,
+    #[account(mut)]
+    pub to: AccountInfo<'info>,
+}
+
+#[derive(Accounts)]
+pub struct Buy<'info> {
+    pub token_program: Program<'info, Token>,
+    #[account(mut)]
+    pub from: UncheckedAccount<'info>,
+    #[account(mut)]
+    pub to: AccountInfo<'info>,
+    pub authority: Signer<'info>,
+}
+
 #[account]
 pub struct HappiCatNFTAccount {
     pub last_feed_date: Option<u64>,
 }
 
-#[derive(Accounts)]
-pub struct Feed<'info> {
-    #[account(mut)]
-    pub happi_cat_nft_account: Box<Account<'info, HappiCatNFTAccount>>,
-}

@@ -45,7 +45,20 @@ export default function IndexPage() {
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content text-center">
           <div className="hero-content flex-col lg:flex-row">
-            <img src="/hero.png" className="max-w-sm rounded-lg shadow-2xl" />
+            <div className="art">
+              <div className="lcd">
+                <div className="line">•⩊• yummy eats the happi tokens ''</div>
+                <div className="line">⋆｡˚ ☁︎ ˚｡⋆｡˚☽˚｡</div>
+                <div className="line">⋆｡˚ ☁︎ ˚｡⋆｡˚</div>
+                <div className="line">?</div>
+                <div className="line">╱|、</div>
+                <div className="line">(˚ˎ 。7</div>
+                <div className="line">|、</div>
+                <div className="line">じしˍ,)ノ</div>
+                <br></br>
+                <div class="line">────⋆⋅☆⋅⋆── ────⋆⋅☆⋅⋆──</div>
+              </div>
+            </div>
             <div className="max-w-md">
               <h1 className="text-2xl font-bold font-game">HappiCat Hideout</h1>
               <div className="divider"></div>

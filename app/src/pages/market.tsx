@@ -23,19 +23,18 @@ const Market: React.FC = () => {
 
       setLoading(true);
 
-      // Fetch the last feed date from the Solana blockchain using the token ID
       const tokenPublicKey = new PublicKey(tokenId);
       const lastFeedDate = await fetchLastFeedDate(tokenPublicKey);
       if (lastFeedDate !== null) {
-        const currentTime = Date.now() / 1000; // Convert milliseconds to seconds
+        const currentTime = Date.now() / 1000;
         const days = Math.floor((currentTime - lastFeedDate) / (24 * 3600));
         setDaysElapsed(days);
       } else {
-        setDaysElapsed(null); // Handle error case if token ID doesn't exist or there's an issue fetching data
+        setDaysElapsed(null);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-      setDaysElapsed(null); // Handle error case
+      setDaysElapsed(null);
     } finally {
       setLoading(false);
     }
@@ -44,7 +43,6 @@ const Market: React.FC = () => {
   const fetchLastFeedDate = async (
     tokenPublicKey: PublicKey
   ): Promise<number | null> => {
-    // Replace this with your actual API endpoint to fetch the last feed date for the given token ID
     const apiUrl = `https://your-api-url.com/last-feed-date/${tokenPublicKey.toBase58()}`;
     try {
       const response = await fetch(apiUrl);
@@ -52,16 +50,24 @@ const Market: React.FC = () => {
         throw new Error("Failed to fetch data");
       }
       const data = await response.json();
-      return data.lastFeedDate; // Assuming the response contains the last feed date
+      return data.lastFeedDate;
     } catch (error) {
       console.error("Error fetching data:", error);
-      return null; // Return null in case of error
+      return null;
+    }
+  };
+
+  const handleBuy = async () => {
+    try {
+      console.log("Buy button clicked");
+    } catch (error) {
+      console.error("Error buying NFT:", error);
     }
   };
 
   return (
     <div>
-      <h1>Calculate Days Elapsed from Last Feed Date</h1>
+      <h1>Marketplace</h1>
       <form onSubmit={handleSubmit}>
         <label>
           Enter Token ID:
@@ -74,6 +80,15 @@ const Market: React.FC = () => {
       {daysElapsed !== null && (
         <p>Days Elapsed from Last Feed Date: {daysElapsed}</p>
       )}
+      <div>
+        <h2>NFT for Sale</h2>
+        <div>
+          <p>NFT Name</p>
+          <p>NFT Description</p>
+          <p>NFT Price</p>
+          <button onClick={handleBuy}>Buy</button>
+        </div>
+      </div>
     </div>
   );
 };
